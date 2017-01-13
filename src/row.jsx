@@ -40,6 +40,7 @@ let style = {
 		console.log("beginDrag index", props.index);
 
 		return {
+			boundingClientRect: component.state.boundingClientRect,
 			index: props.index,
 			text: props.text,
 			swap: props.swap,
@@ -57,7 +58,17 @@ let style = {
 	isDragging: monitor.isDragging(),
 }))
 export default class Row extends React.Component {
+    constructor(props) {
+        super(props);
+
+		this.state = {
+			boundingClientRect: null
+		}
+    }
 	componentDidMount() {
+		this.setState({
+			boundingClientRect: this.self.getBoundingClientRect()
+		});
 		this.props.connectDragPreview(getEmptyImage(), {
 			captureDraggingState: true
 		});
@@ -69,7 +80,7 @@ export default class Row extends React.Component {
 		return connectDropTarget(connectDragSource(
 			<tbody>
 				<tr>
-					<td style={style.cell} dangerouslySetInnerHTML={{ __html: text }}></td>
+					<td style={style.cell} dangerouslySetInnerHTML={{ __html: text }} ref={(tbody) => { this.self = tbody; }}></td>
 				</tr>
 			</tbody>
 		));

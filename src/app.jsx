@@ -3,10 +3,15 @@ import { DragDropContext, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import Row from './row.jsx';
+import RowDragSource from './row_drag_source.jsx';
+import RowDropTarget from './row_drop_target.jsx';
 import Preview from './preview.jsx';
 
 @DragDropContext(HTML5Backend)
 @DropTarget("ROW", {
+	canDrop() {
+		return false;
+	},
 }, (connect, monitor) => {
 	return {
 		dragItem: monitor.getItem()
@@ -21,7 +26,7 @@ export default class App extends React.Component {
 			listB: Array.from({length: 10}, (v, i) => i),
 		}
     }
-	
+
 	swapItems(key, from, to) {
 		let items = this.state[key];
 	
@@ -35,38 +40,25 @@ export default class App extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
-		
 		return (
 			<div>
-				<table width="100%">
+				<table width="100%" cellPadding="0" cellSpacing="0" border="0">
 					{(() => {
 						return this.state.listA.map((text, index) => {
 							return (
-								<Row key={"listA"+index} text={text} index={index} swap={this.swapItems.bind(this, 'listA')}>{text}</Row>
-							)
+								<Row key={"listA"+index} index={index} text={text} swap={this.swapItems.bind(this,"listA")}>
+									{text}
+								</Row>
+							);
 						})
 					})()}
-				</table>
-				<br/><br/>
-				<table width="100%">
-					{(() => {
-						return this.state.listB.map((text, index) => {
-							return (
-								<Row key={"listB"+index} text={text} index={index} swap={this.swapItems.bind(this, 'listB')}>{text}</Row>
-							)
-						})
-					})()}
-					<Preview>
-					{(() => {
-						if (!this.props.dragItem) {
-							return;
-						}
-						
-						return (
-							this.props.dragItem.text
-						);
-					})()}
+
+					<Preview dragItem={this.props.dragItem}>
+						{(() => {
+							if (this.props.dragItem) {
+								return this.props.dragItem.text;
+							}
+						})()}
 					</Preview>
 				</table>
 			</div>

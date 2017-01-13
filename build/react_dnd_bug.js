@@ -75,7 +75,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "33d23f635cb9b77daf6f"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c61b656cdc3ba18560e1"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -596,7 +596,7 @@ return /******/ (function(modules) { // webpackBootstrap
   \******************/
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(/*! /var/www/react-dnd-dragbug/src/index.jsx */1);
+	module.exports = __webpack_require__(/*! /home/butch/workspace/react-dnd-dragbug/src/index.jsx */1);
 
 
 /***/ },
@@ -22714,13 +22714,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _row2 = _interopRequireDefault(_row);
 	
-	var _preview = __webpack_require__(/*! ./preview.jsx */ 445);
+	var _row_drag_source = __webpack_require__(/*! ./row_drag_source.jsx */ 445);
+	
+	var _row_drag_source2 = _interopRequireDefault(_row_drag_source);
+	
+	var _row_drop_target = __webpack_require__(/*! ./row_drop_target.jsx */ 446);
+	
+	var _row_drop_target2 = _interopRequireDefault(_row_drop_target);
+	
+	var _preview = __webpack_require__(/*! ./preview.jsx */ 447);
 	
 	var _preview2 = _interopRequireDefault(_preview);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var App = (_dec = (0, _reactDnd.DragDropContext)(_reactDndHtml5Backend2['default']), _dec2 = (0, _reactDnd.DropTarget)("ROW", {}, function (connect, monitor) {
+	var App = (_dec = (0, _reactDnd.DragDropContext)(_reactDndHtml5Backend2['default']), _dec2 = (0, _reactDnd.DropTarget)("ROW", {
+		canDrop: function canDrop() {
+			return false;
+		}
+	}, function (connect, monitor) {
 		return {
 			dragItem: monitor.getItem()
 		};
@@ -22761,47 +22773,28 @@ return /******/ (function(modules) { // webpackBootstrap
 			value: function render() {
 				var _this2 = this;
 	
-				console.log(this.props);
-	
 				return _react2['default'].createElement(
 					'div',
 					null,
 					_react2['default'].createElement(
 						'table',
-						{ width: '100%' },
+						{ width: '100%', cellPadding: '0', cellSpacing: '0', border: '0' },
 						function () {
 							return _this2.state.listA.map(function (text, index) {
 								return _react2['default'].createElement(
 									_row2['default'],
-									{ key: "listA" + index, text: text, index: index, swap: _this2.swapItems.bind(_this2, 'listA') },
-									text
-								);
-							});
-						}()
-					),
-					_react2['default'].createElement('br', null),
-					_react2['default'].createElement('br', null),
-					_react2['default'].createElement(
-						'table',
-						{ width: '100%' },
-						function () {
-							return _this2.state.listB.map(function (text, index) {
-								return _react2['default'].createElement(
-									_row2['default'],
-									{ key: "listB" + index, text: text, index: index, swap: _this2.swapItems.bind(_this2, 'listB') },
+									{ key: "listA" + index, index: index, text: text, swap: _this2.swapItems.bind(_this2, "listA") },
 									text
 								);
 							});
 						}(),
 						_react2['default'].createElement(
 							_preview2['default'],
-							null,
+							{ dragItem: this.props.dragItem },
 							function () {
-								if (!_this2.props.dragItem) {
-									return;
+								if (_this2.props.dragItem) {
+									return _this2.props.dragItem.text;
 								}
-	
-								return _this2.props.dragItem.text;
 							}()
 						)
 					)
@@ -33715,6 +33708,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			console.log("beginDrag index", props.index);
 	
 			return {
+				boundingClientRect: component.state.boundingClientRect,
 				index: props.index,
 				text: props.text,
 				swap: props.swap
@@ -33735,14 +33729,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	}), _dec(_class = _dec2(_class = function (_React$Component) {
 		(0, _inherits3['default'])(Row, _React$Component);
 	
-		function Row() {
+		function Row(props) {
 			(0, _classCallCheck3['default'])(this, Row);
-			return (0, _possibleConstructorReturn3['default'])(this, (Row.__proto__ || (0, _getPrototypeOf2['default'])(Row)).apply(this, arguments));
+	
+			var _this = (0, _possibleConstructorReturn3['default'])(this, (Row.__proto__ || (0, _getPrototypeOf2['default'])(Row)).call(this, props));
+	
+			_this.state = {
+				boundingClientRect: null
+			};
+			return _this;
 		}
 	
 		(0, _createClass3['default'])(Row, [{
 			key: 'componentDidMount',
 			value: function componentDidMount() {
+				this.setState({
+					boundingClientRect: this.self.getBoundingClientRect()
+				});
 				this.props.connectDragPreview((0, _reactDndHtml5Backend.getEmptyImage)(), {
 					captureDraggingState: true
 				});
@@ -33750,6 +33753,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		}, {
 			key: 'render',
 			value: function render() {
+				var _this2 = this;
+	
 				var _props = this.props,
 				    connectDragSource = _props.connectDragSource,
 				    connectDropTarget = _props.connectDropTarget,
@@ -33764,7 +33769,9 @@ return /******/ (function(modules) { // webpackBootstrap
 					_react2['default'].createElement(
 						'tr',
 						null,
-						_react2['default'].createElement('td', { style: style.cell, dangerouslySetInnerHTML: { __html: text } })
+						_react2['default'].createElement('td', { style: style.cell, dangerouslySetInnerHTML: { __html: text }, ref: function ref(tbody) {
+								_this2.self = tbody;
+							} })
 					)
 				)));
 			}
@@ -33775,9 +33782,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 445 */
-/*!*************************!*\
-  !*** ./src/preview.jsx ***!
-  \*************************/
+/*!*********************************!*\
+  !*** ./src/row_drag_source.jsx ***!
+  \*********************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33815,15 +33822,258 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _reactDnd = __webpack_require__(/*! react-dnd */ 276);
 	
+	var _reactDndHtml5Backend = __webpack_require__(/*! react-dnd-html5-backend */ 412);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	var style = {
 		cell: {
-			border: '1px solid blue',
-			userSelect: 'none',
-			width: '500px',
-			zIndex: -1
+			position: 'relative',
+			cursor: 'pointer',
+			border: '1px solid red',
+			userSelect: 'none'
 		}
+	};
+	
+	function getStyles(props) {
+		var left = props.left,
+		    top = props.top,
+		    isDragging = props.isDragging;
+	
+		var transform = 'translate3d(' + left + 'px, ' + top + 'px, 0)';
+	
+		return {
+			transform: transform,
+			WebkitTransform: transform
+		};
+	}
+	
+	var RowDragSource = (_dec = (0, _reactDnd.DragSource)("ROW", {
+		beginDrag: function beginDrag(props, monitor, component) {
+			console.log("beginDrag index", props.index);
+	
+			return {
+				index: props.index,
+				text: props.text,
+				swap: props.swap
+			};
+		},
+		endDrag: function endDrag(props, monitor, component) {
+			console.log("endDrag index", props.index);
+		},
+		canDrag: function canDrag() {
+			return true;
+		}
+	}, function (connect, monitor) {
+		return {
+			connectDragSource: connect.dragSource(),
+			connectDragPreview: connect.dragPreview(),
+			isDragging: monitor.isDragging()
+		};
+	}), _dec(_class = function (_React$Component) {
+		(0, _inherits3['default'])(RowDragSource, _React$Component);
+	
+		function RowDragSource() {
+			(0, _classCallCheck3['default'])(this, RowDragSource);
+			return (0, _possibleConstructorReturn3['default'])(this, (RowDragSource.__proto__ || (0, _getPrototypeOf2['default'])(RowDragSource)).apply(this, arguments));
+		}
+	
+		(0, _createClass3['default'])(RowDragSource, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.props.connectDragPreview((0, _reactDndHtml5Backend.getEmptyImage)(), {
+					captureDraggingState: true
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var _props = this.props,
+				    connectDragSource = _props.connectDragSource,
+				    isDragging = _props.isDragging,
+				    isOver = _props.isOver;
+	
+	
+				return connectDragSource(_react2['default'].createElement(
+					'div',
+					{ style: getStyles(this.props) },
+					_react2['default'].createElement(
+						'div',
+						{ style: style.cell },
+						this.props.children
+					)
+				));
+			}
+		}]);
+		return RowDragSource;
+	}(_react2['default'].Component)) || _class);
+	exports['default'] = RowDragSource;
+
+/***/ },
+/* 446 */
+/*!*********************************!*\
+  !*** ./src/row_drop_target.jsx ***!
+  \*********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports['default'] = undefined;
+	
+	var _getPrototypeOf = __webpack_require__(/*! babel-runtime/core-js/object/get-prototype-of */ 234);
+	
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+	
+	var _classCallCheck2 = __webpack_require__(/*! babel-runtime/helpers/classCallCheck */ 238);
+	
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+	
+	var _createClass2 = __webpack_require__(/*! babel-runtime/helpers/createClass */ 239);
+	
+	var _createClass3 = _interopRequireDefault(_createClass2);
+	
+	var _possibleConstructorReturn2 = __webpack_require__(/*! babel-runtime/helpers/possibleConstructorReturn */ 243);
+	
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+	
+	var _inherits2 = __webpack_require__(/*! babel-runtime/helpers/inherits */ 268);
+	
+	var _inherits3 = _interopRequireDefault(_inherits2);
+	
+	var _dec, _class;
+	
+	var _react = __webpack_require__(/*! react */ 2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDnd = __webpack_require__(/*! react-dnd */ 276);
+	
+	var _reactDndHtml5Backend = __webpack_require__(/*! react-dnd-html5-backend */ 412);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var style = {
+		cell: {
+			position: 'relative',
+			border: '1px solid grey',
+			userSelect: 'none',
+			padding: '10px'
+		}
+	};
+	
+	var RowDropTarget = (_dec = (0, _reactDnd.DropTarget)("ROW", {
+		canDrop: function canDrop() {
+			return true;
+		},
+		hover: function hover(props, monitor, component) {
+			var from = monitor.getItem().index,
+			    to = props.index;
+	
+			if (from === to) {
+				return;
+			}
+	
+			props.swap(from, to);
+	
+			monitor.getItem().index = to;
+		}
+	}, function (connect, monitor) {
+		return {
+			dragItem: monitor.getItem(),
+			connectDropTarget: connect.dropTarget(),
+			isOver: monitor.isOver(),
+			canDrop: monitor.canDrop()
+		};
+	}), _dec(_class = function (_React$Component) {
+		(0, _inherits3['default'])(RowDropTarget, _React$Component);
+	
+		function RowDropTarget() {
+			(0, _classCallCheck3['default'])(this, RowDropTarget);
+			return (0, _possibleConstructorReturn3['default'])(this, (RowDropTarget.__proto__ || (0, _getPrototypeOf2['default'])(RowDropTarget)).apply(this, arguments));
+		}
+	
+		(0, _createClass3['default'])(RowDropTarget, [{
+			key: 'render',
+			value: function render() {
+				var _props = this.props,
+				    connectDropTarget = _props.connectDropTarget,
+				    isDragging = _props.isDragging,
+				    isOver = _props.isOver;
+	
+	
+				return connectDropTarget(_react2['default'].createElement(
+					'div',
+					{ style: style.cell },
+					this.props.children
+				));
+			}
+		}]);
+		return RowDropTarget;
+	}(_react2['default'].Component)) || _class);
+	exports['default'] = RowDropTarget;
+
+/***/ },
+/* 447 */
+/*!*************************!*\
+  !*** ./src/preview.jsx ***!
+  \*************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports['default'] = undefined;
+	
+	var _extends2 = __webpack_require__(/*! babel-runtime/helpers/extends */ 448);
+	
+	var _extends3 = _interopRequireDefault(_extends2);
+	
+	var _getPrototypeOf = __webpack_require__(/*! babel-runtime/core-js/object/get-prototype-of */ 234);
+	
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+	
+	var _classCallCheck2 = __webpack_require__(/*! babel-runtime/helpers/classCallCheck */ 238);
+	
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+	
+	var _createClass2 = __webpack_require__(/*! babel-runtime/helpers/createClass */ 239);
+	
+	var _createClass3 = _interopRequireDefault(_createClass2);
+	
+	var _possibleConstructorReturn2 = __webpack_require__(/*! babel-runtime/helpers/possibleConstructorReturn */ 243);
+	
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+	
+	var _inherits2 = __webpack_require__(/*! babel-runtime/helpers/inherits */ 268);
+	
+	var _inherits3 = _interopRequireDefault(_inherits2);
+	
+	var _dec, _class;
+	
+	var _react = __webpack_require__(/*! react */ 2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDnd = __webpack_require__(/*! react-dnd */ 276);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var layerStyles = {
+		position: 'fixed',
+		pointerEvents: 'none',
+		zIndex: 100,
+		left: 0,
+		top: 0
+	};
+	
+	var boxStyle = {
+		border: '1px solid blue',
+		width: '500px'
 	};
 	
 	function getItemStyles(props, state) {
@@ -33838,17 +34088,26 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		var y = currentOffset.y;
-		var transform = 'translate(0, ' + y + 'px)';
+		var x = initialOffset.x;
+		var transform = 'translate(' + x + 'px, ' + y + 'px)';
 	
 		var style = {
-			position: 'fixed',
-			zIndex: 1,
-			top: 0,
-			marginLeft: '-2px',
 			transform: transform
 		};
 	
 		return style;
+	}
+	
+	function getBoxStyles(props, state) {
+		if (!props.item) {
+			return {};
+		}
+	
+		console.log(props.item.boundingClientRect);
+	
+		return {
+			width: props.item.boundingClientRect.width + 'px'
+		};
 	}
 	
 	var Preview = (_dec = (0, _reactDnd.DragLayer)(function (monitor) {
@@ -33870,15 +34129,16 @@ return /******/ (function(modules) { // webpackBootstrap
 		(0, _createClass3['default'])(Preview, [{
 			key: 'render',
 			value: function render() {
+	
 				return _react2['default'].createElement(
 					'tbody',
-					{ style: getItemStyles(this.props, this.state) },
+					{ style: (0, _extends3['default'])({}, layerStyles, getItemStyles(this.props, this.state)) },
 					_react2['default'].createElement(
 						'tr',
 						null,
 						_react2['default'].createElement(
 							'td',
-							{ style: style.cell },
+							{ style: (0, _extends3['default'])({}, boxStyle, getBoxStyles(this.props, this.state)) },
 							this.props.children
 						)
 					)
@@ -33887,7 +34147,168 @@ return /******/ (function(modules) { // webpackBootstrap
 		}]);
 		return Preview;
 	}(_react2['default'].Component)) || _class);
+	
+	/*
+	const layerStyles = {
+	  position: 'fixed',
+	  pointerEvents: 'none',
+	  zIndex: 100,
+	  left: 0,
+	  top: 0,
+	  width: '100%',
+	  height: '100%',
+	
+	};
+	
+	const boxStyle = {
+	  border: '1px solid blue',	
+	}
+	
+	function getItemStyles(props, state) {
+		const { initialOffset, currentOffset, item } = props;
+		if (!initialOffset || !currentOffset) {
+			return {
+				display: 'none'
+			};
+		}
+	
+		const y = (currentOffset.y);
+		const transform = `translate(0, ${y}px)`;
+	
+		const style = {
+			transform: transform,
+		};
+	
+		return style;
+	}
+	
+	@DragLayer((monitor) => {
+		return {
+			item: monitor.getItem(),
+			itemType: monitor.getItemType(),
+			initialOffset: monitor.getInitialSourceClientOffset(),
+			currentOffset: monitor.getSourceClientOffset(),
+			isDragging: monitor.isDragging(),
+		};
+	})
+	export default class Preview extends React.Component {
+		render() {
+			return (
+				<div style={layerStyles}>
+					<div style={getItemStyles(this.props, this.state)}>
+						<div style={boxStyle}>
+							{this.props.children}
+						</div>
+					</div>
+				</div>
+			);
+		}
+	}*/
+	
 	exports['default'] = Preview;
+
+/***/ },
+/* 448 */
+/*!********************************************!*\
+  !*** ./~/babel-runtime/helpers/extends.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	exports.__esModule = true;
+	
+	var _assign = __webpack_require__(/*! ../core-js/object/assign */ 449);
+	
+	var _assign2 = _interopRequireDefault(_assign);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	
+	exports["default"] = _assign2["default"] || function (target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = arguments[i];
+	
+	    for (var key in source) {
+	      if (Object.prototype.hasOwnProperty.call(source, key)) {
+	        target[key] = source[key];
+	      }
+	    }
+	  }
+	
+	  return target;
+	};
+
+/***/ },
+/* 449 */
+/*!**************************************************!*\
+  !*** ./~/babel-runtime/core-js/object/assign.js ***!
+  \**************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(/*! core-js/library/fn/object/assign */ 450), __esModule: true };
+
+/***/ },
+/* 450 */
+/*!***********************************************!*\
+  !*** ./~/core-js/library/fn/object/assign.js ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(/*! ../../modules/es6.object.assign */ 451);
+	module.exports = __webpack_require__(/*! ../../modules/_core */ 191).Object.assign;
+
+/***/ },
+/* 451 */
+/*!********************************************************!*\
+  !*** ./~/core-js/library/modules/es6.object.assign.js ***!
+  \********************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(/*! ./_export */ 189);
+	
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(/*! ./_object-assign */ 452)});
+
+/***/ },
+/* 452 */
+/*!*****************************************************!*\
+  !*** ./~/core-js/library/modules/_object-assign.js ***!
+  \*****************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	// 19.1.2.1 Object.assign(target, source, ...)
+	var getKeys  = __webpack_require__(/*! ./_object-keys */ 210)
+	  , gOPS     = __webpack_require__(/*! ./_object-gops */ 259)
+	  , pIE      = __webpack_require__(/*! ./_object-pie */ 260)
+	  , toObject = __webpack_require__(/*! ./_to-object */ 226)
+	  , IObject  = __webpack_require__(/*! ./_iobject */ 213)
+	  , $assign  = Object.assign;
+	
+	// should work with symbols and should have deterministic property order (V8 bug)
+	module.exports = !$assign || __webpack_require__(/*! ./_fails */ 200)(function(){
+	  var A = {}
+	    , B = {}
+	    , S = Symbol()
+	    , K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function(k){ B[k] = k; });
+	  return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
+	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+	  var T     = toObject(target)
+	    , aLen  = arguments.length
+	    , index = 1
+	    , getSymbols = gOPS.f
+	    , isEnum     = pIE.f;
+	  while(aLen > index){
+	    var S      = IObject(arguments[index++])
+	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+	      , length = keys.length
+	      , j      = 0
+	      , key;
+	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+	  } return T;
+	} : $assign;
 
 /***/ }
 /******/ ])
